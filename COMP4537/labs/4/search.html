@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Search through Dictionary</h1>
+    <input id="word" type="text">
+    <button type="button" onclick="get()">Search</button>
+    <div id="response"></div>
+    <script>
+        // This function checks if a string has numbers in it, returning true if it does, false otherwise
+        function hasNumbers(str) {
+            return /\d/.test(str);
+        }
+
+        // This function sends a GET request to the API, and displays the response in the response div
+        function get() {
+            if (document.getElementById("word").value != "" && !hasNumbers(document.getElementById("word").value))
+            {
+                const xhttp = new XMLHttpRequest();
+                const endpoint = "https://larulas.com/COMP4537/labs/4/api/definition/";
+                const word = ("?word=" + document.getElementById("word").value);
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        const response = JSON.parse(this.responseText);
+                        document.getElementById("response").innerHTML =
+                            "<h1>" + response.word + "</h1>" +
+                            "<p>" + response.definition + "</p>";
+                    } else if (this.readyState == 4 && this.status == 404) {
+                        document.getElementById("response").innerHTML =
+                            "<h1>Word not found</h1>";
+                    }
+                };
+                xhttp.open("GET", endpoint + word, true);
+                xhttp.send();
+            } else {
+                document.getElementById("response").innerHTML = "<h1>Invalid input</h1>";
+            }
+        }
+    </script>
+</body>
+
+</html>
